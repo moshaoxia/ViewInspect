@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingTop="40dp"
+    tools:context=".MainActivity"
+    android:background="@android:color/holo_green_light"
+    >
+    <LinearLayout
+        android:id="@+id/ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:background="@android:color/holo_blue_light"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/tv_hello"
+            android:text="Hello World!"
+            style="@style/btnStyle" />
+
+        <TextView
+            android:id="@+id/btnHook"
+            style="@style/btnStyle"
+            android:text="Hook自己"
+            />
+        <TextView
+            android:id="@+id/btnText"
+            style="@style/btnStyle"
+            android:text="给TextView设置点击事件"
+            />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/caidog"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/caidog"
+        />
+    <TextView
+        android:id="@+id/hookViewGroup"
+        style="@style/btnStyle"
+        android:text="hook指定ViewGroup"
+        />
+
+    <TextView
+        android:id="@+id/addFloat"
+        style="@style/btnStyle"
+        android:text="添加悬浮组件"
+        />
+</androidx.appcompat.widget.LinearLayoutCompat>

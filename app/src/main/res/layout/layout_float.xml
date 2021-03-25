@@ -13,7 +13,7 @@
         android:minHeight="40dp"
         android:padding="15dp"
         android:paddingStart="30dp"
-        android:textColor="@color/black" />
+        android:textColor="@color/white" />
 
     <ImageView
         android:id="@+id/hookTrigger"

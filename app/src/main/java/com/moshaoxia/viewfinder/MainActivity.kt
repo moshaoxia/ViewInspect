@@ -43,8 +43,9 @@ class MainActivity : AppCompatActivity() {
             val view = FloatingView.get().view
             if (view != null && view.isVisible) {
                 //这个地方还可以自定义所在页面信息
-                FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text =
-                    ContextUtil.getViewInfo(it)
+                val name = ContextUtil.getRunningActivity().javaClass.simpleName
+                val viewInfo = ContextUtil.getViewInfo(it)
+                FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text ="$viewInfo\n$name"
             }
         }
 

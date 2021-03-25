@@ -1,18 +1,18 @@
-package com.moshaoxia.varietystore.hookview;
+package com.moshaoxia.viewfinder.hookview;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.moshaoxia.varietystore.hookview.utils.FloatUtil;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 
 /**
  * @author mohaiyang
  * Date：2021/3/23
- * Email: mohaiyang@yy.com
+ * Email: 345079386@qq.com
  * Description:
  * 1、获取当前Activity
  * 2、遍历当前window下所有DecorView下子view 并hook它们的点击事件
@@ -21,18 +21,6 @@ import java.lang.reflect.Method;
 public class HookViewClickHelper {
 
     private static final String TAG = "HookViewClickHelper";
-    public static boolean hookAll = true;
-
-    public static HookViewClickHelper getInstance() {
-        return HookViewClickHelperHolder.sHookViewClickHelper;
-    }
-
-    private static class HookViewClickHelperHolder {
-        private static final HookViewClickHelper sHookViewClickHelper = new HookViewClickHelper();
-    }
-
-    private HookViewClickHelper() {
-    }
 
     public static void hookViewClick(View view) {
         try {
@@ -41,18 +29,18 @@ public class HookViewClickHelper {
             getListenerInfo.setAccessible(true);
             Object listenerInfoObj = getListenerInfo.invoke(view);
             Class<?> infoClass = Class.forName("android.view.View$ListenerInfo");
-            Field field = infoClass.getDeclaredField("mOnClickListener");
+            Field field = infoClass.getDeclaredField("mOnTouchListener");
             field.setAccessible(true);
-            View.OnClickListener onClickListener = (View.OnClickListener) field.get(listenerInfoObj);
-            if (onClickListener == null && hookAll && !(view instanceof NotHook)) {
-                view.setOnClickListener(new OnClickListenerProxy(null));
+            View.OnTouchListener onTouchListener = (View.OnTouchListener) field.get(listenerInfoObj);
+            if (onTouchListener == null) {
+                view.setOnTouchListener(new OnTouchListenerProxy(null));
                 Log.d(TAG, "hookViewClick onClickListener = null");
                 return;
-            } else if (onClickListener instanceof OnClickListenerProxy) {
+            } else if (onTouchListener instanceof OnTouchListenerProxy) {
                 Log.d(TAG, "hookViewClick view = " + view + "already hooked");
                 return;
             }
-            OnClickListenerProxy proxy = new OnClickListenerProxy(onClickListener);
+            OnTouchListenerProxy proxy = new OnTouchListenerProxy(onTouchListener);
             field.set(listenerInfoObj, proxy);
         } catch (Exception e) {
             Log.e(TAG, "hookViewClick view = " + view + " error:", e);
@@ -61,7 +49,7 @@ public class HookViewClickHelper {
     }
 
     public static void hookCurrentActivity() {
-        View decorView = FloatUtil.getRunningActivity().getWindow().getDecorView();
+        View decorView = ContextUtil.getRunningActivity().getWindow().getDecorView();
         hookViews(decorView);
     }
 
@@ -81,42 +69,41 @@ public class HookViewClickHelper {
         }
     }
 
+    public static class OnTouchListenerProxy implements View.OnTouchListener {
 
-
-    public interface NotHook {
-
-    }
-
-    public static class OnClickListenerProxy implements View.OnClickListener {
-
-        private View.OnClickListener clickListener;
+        private View.OnTouchListener touchListener;
         private static Interceptor interceptor;
+        private static LinkedList<View> list = new LinkedList<>();
 
         public static void setInterceptor(Interceptor interceptor) {
-            OnClickListenerProxy.interceptor = interceptor;
+            OnTouchListenerProxy.interceptor = interceptor;
         }
 
-        public OnClickListenerProxy() {
+        public OnTouchListenerProxy(View.OnTouchListener clickListener) {
+            this.touchListener = clickListener;
         }
-
-        public OnClickListenerProxy(View.OnClickListener clickListener) {
-            this.clickListener = clickListener;
-        }
-
-
 
         @Override
-        public void onClick(View v) {
+        public boolean onTouch(View v, MotionEvent event) {
             if (interceptor != null) {
-                interceptor.onClickBefore(v);
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    //todo 添加一个过滤透明View的方法
+                    list.add(v);
+                } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    if (!list.isEmpty()) {
+                        interceptor.onTouch(list.getFirst());
+                        list.clear();
+                    }
+                }
             }
-            if (clickListener != null) {
-                clickListener.onClick(v);
+            if (touchListener != null) {
+                return touchListener.onTouch(v, event);
             }
+            return false;
         }
 
         public interface Interceptor {
-            void onClickBefore(View v);
+            void onTouch(View v);
         }
     }
 }

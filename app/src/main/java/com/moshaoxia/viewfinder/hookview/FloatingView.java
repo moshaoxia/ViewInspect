@@ -1,4 +1,4 @@
-package com.moshaoxia.varietystore.hookview;
+package com.moshaoxia.viewfinder.hookview;
 
 import android.app.Activity;
 import android.app.Application;
@@ -17,8 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
-import com.moshaoxia.varietystore.R;
-import com.moshaoxia.varietystore.hookview.utils.FloatUtil;
+import com.moshaoxia.viewfinder.R;
 
 import java.lang.ref.WeakReference;
 
@@ -29,16 +28,18 @@ import java.lang.ref.WeakReference;
  * @Author Yunpeng Li
  * @Creation 2018/3/15 下午5:05
  * @Mender Yunpeng Li
- * @Modification 2018/3/15 下午5:05
+ * @Modification by moshaoxia on 2021/3/23
  */
 public class FloatingView implements IFloatingView {
     private static final String TAG = "FloatingView";
     private FloatingMagnetView mEnFloatingView;
     private static volatile FloatingView mInstance;
     private WeakReference<FrameLayout> mContainer;
-    private ViewGroup.LayoutParams mLayoutParams = getParams();
     private Activity attachedActivity;
     private View.OnClickListener clickListener;
+    private int marginLeftRight = 15;
+    private int marginBottom = 300;
+    private ViewGroup.LayoutParams mLayoutParams = getParams();
 
     private FloatingView() {
         registerActivity();
@@ -141,10 +142,10 @@ public class FloatingView implements IFloatingView {
     }
 
     @Override
-    public void show() {
+    public FloatingView show() {
         if (mEnFloatingView == null) {
             if (attachedActivity == null) {
-                attachedActivity = FloatUtil.getRunningActivity();
+                attachedActivity = ContextUtil.getRunningActivity();
             }
             mEnFloatingView = (FloatingMagnetView) LayoutInflater.from(attachedActivity).inflate(R.layout.layout_float, null);
             mEnFloatingView.findViewById(R.id.btnClose).setOnClickListener(new View.OnClickListener() {
@@ -163,6 +164,7 @@ public class FloatingView implements IFloatingView {
             });
         }
         add().attach(attachedActivity);
+        return this;
     }
 
     public FloatingView customView(FloatingMagnetView viewGroup) {
@@ -174,13 +176,6 @@ public class FloatingView implements IFloatingView {
         mLayoutParams = params;
         if (mEnFloatingView != null) {
             mEnFloatingView.setLayoutParams(params);
-        }
-        return this;
-    }
-
-    public FloatingView listener(MagnetViewListener magnetViewListener) {
-        if (mEnFloatingView != null) {
-            mEnFloatingView.setMagnetViewListener(magnetViewListener);
         }
         return this;
     }
@@ -208,7 +203,7 @@ public class FloatingView implements IFloatingView {
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.BOTTOM | Gravity.END;
-        params.setMargins(15, params.topMargin, 15, 300);
+        params.setMargins(marginLeftRight, params.topMargin, marginLeftRight, marginBottom);
         return params;
     }
 
@@ -225,7 +220,7 @@ public class FloatingView implements IFloatingView {
     }
 
     private void registerActivity() {
-        FloatUtil.getApp()
+        ContextUtil.getApp()
                 .registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
                     @Override
                     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {

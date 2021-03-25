@@ -1,14 +1,15 @@
-package com.moshaoxia.varietystore
+package com.moshaoxia.viewfinder
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.moshaoxia.varietystore.hookview.FloatingMagnetView
-import com.moshaoxia.varietystore.hookview.FloatingView
-import com.moshaoxia.varietystore.hookview.HookViewClickHelper
-import com.moshaoxia.varietystore.hookview.utils.FloatUtil
+import androidx.core.view.isVisible
+import com.moshaoxia.viewfinder.hookview.FloatingView
+import com.moshaoxia.viewfinder.hookview.HookViewClickHelper
+import com.moshaoxia.viewfinder.hookview.ContextUtil
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,24 +31,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<LinearLayout>(R.id.ll_root).setOnTouchListener { v, event ->
+            Log.i(TAG, "ll_root onTouch")
+            false
+        }
+
         findViewById<TextView>(R.id.hookViewGroup).setOnClickListener {
             HookViewClickHelper.hookViewClick(findViewById(R.id.ll_root))
         }
-        HookViewClickHelper.OnClickListenerProxy.setInterceptor {
-            FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text = FloatUtil.getViewInfo(it)
+        HookViewClickHelper.OnTouchListenerProxy.setInterceptor {
+            val view = FloatingView.get().view
+            if (view != null && view.isVisible) {
+                //这个地方还可以自定义所在页面信息
+                FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text =
+                    ContextUtil.getViewInfo(it)
+            }
         }
 
         findViewById<TextView>(R.id.addFloat).setOnClickListener {
             FloatingView.get().show()
-            val floatRoot =
-                FloatingView.get().view.findViewById<FloatingMagnetView>(R.id.floatRoot)
-            Log.i(TAG, "name: float root = $floatRoot")
+            //下面这两行代码可以封装到内部去，使用者自己决定
+            HookViewClickHelper.hookCurrentActivity()
             FloatingView.get().setItemClickListener {
                 HookViewClickHelper.hookCurrentActivity()
             }
         }
     }
-
 
 
 }

@@ -1,4 +1,4 @@
-package com.moshaoxia.varietystore.hookview;
+package com.moshaoxia.viewfinder.hookview;
 
 import android.app.Activity;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 
 /**
  * Created by Yunpeng Li on 2018/3/15.
+ * @Modification by moshaoxia on 2021/3/23
  */
 
 public interface IFloatingView {
@@ -21,7 +22,7 @@ public interface IFloatingView {
 
     FloatingMagnetView getView();
 
-    void show();
+    FloatingView show();
 
     FloatingView remove();
 

@@ -1,4 +1,4 @@
-package com.moshaoxia.varietystore
+package com.moshaoxia.viewfinder
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

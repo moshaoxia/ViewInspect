@@ -1,4 +1,4 @@
-package com.moshaoxia.varietystore.hookview;
+package com.moshaoxia.viewfinder.hookview;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,8 +9,6 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.moshaoxia.varietystore.hookview.utils.FloatUtil;
-
 
 /**
  * @ClassName FloatingMagnetView
@@ -18,28 +16,22 @@ import com.moshaoxia.varietystore.hookview.utils.FloatUtil;
  * @Author Yunpeng Li
  * @Creation 2018/3/15 下午5:02
  * @Mender Yunpeng Li
- * @Modification 2018/3/15 下午5:02
+ * @Modification by moshaoxia on 2021/3/23
  */
-public class FloatingMagnetView extends FrameLayout implements HookViewClickHelper.NotHook {
+public class FloatingMagnetView extends FrameLayout implements NotHook {
 
     public static final int MARGIN_EDGE = 13;
     private float mOriginalRawX;
     private float mOriginalRawY;
     private float mOriginalX;
     private float mOriginalY;
-    private MagnetViewListener mMagnetViewListener;
     private static final int TOUCH_TIME_THRESHOLD = 150;
     private long mLastTouchDownTime;
     protected MoveAnimator mMoveAnimator;
     protected int mScreenWidth;
     private int mScreenHeight;
-    private int mStatusBarHeight;
     private boolean isNearestLeft = true;
     private float mPortraitY;
-
-    public void setMagnetViewListener(MagnetViewListener magnetViewListener) {
-        this.mMagnetViewListener = magnetViewListener;
-    }
 
     public FloatingMagnetView(Context context) {
         this(context, null);
@@ -56,9 +48,7 @@ public class FloatingMagnetView extends FrameLayout implements HookViewClickHelp
 
     private void init() {
         mMoveAnimator = new MoveAnimator();
-        mStatusBarHeight = FloatUtil.getStatusBarHeight(getContext());
         setClickable(true);
-//        updateSize();
     }
 
     @Override
@@ -87,9 +77,7 @@ public class FloatingMagnetView extends FrameLayout implements HookViewClickHelp
     }
 
     protected void dealClickEvent() {
-        if (mMagnetViewListener != null) {
-            mMagnetViewListener.onClick(this);
-        }
+
     }
 
     protected boolean isOnClickEvent() {
@@ -100,8 +88,8 @@ public class FloatingMagnetView extends FrameLayout implements HookViewClickHelp
         setX(mOriginalX + event.getRawX() - mOriginalRawX);
         // 限制不可超出屏幕高度
         float desY = mOriginalY + event.getRawY() - mOriginalRawY;
-        if (desY < mStatusBarHeight) {
-            desY = mStatusBarHeight;
+        if (desY < 0) {
+            desY = 0;
         }
         if (desY > mScreenHeight - getHeight()) {
             desY = mScreenHeight - getHeight();
@@ -123,8 +111,6 @@ public class FloatingMagnetView extends FrameLayout implements HookViewClickHelp
             mScreenWidth = viewGroup.getWidth() - getWidth();
             mScreenHeight = viewGroup.getHeight();
         }
-//        mScreenWidth = (SystemUtils.getScreenWidth(getContext()) - this.getWidth());
-//        mScreenHeight = SystemUtils.getScreenHeight(getContext());
     }
 
     public void moveToEdge() {
@@ -150,13 +136,6 @@ public class FloatingMagnetView extends FrameLayout implements HookViewClickHelp
         isNearestLeft = getX() < middle;
         return isNearestLeft;
     }
-
-    public void onRemove() {
-        if (mMagnetViewListener != null) {
-            mMagnetViewListener.onRemove(this);
-        }
-    }
-
     protected class MoveAnimator implements Runnable {
 
         private Handler handler = new Handler(Looper.getMainLooper());

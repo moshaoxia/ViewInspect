@@ -1,4 +1,4 @@
-package com.moshaoxia.varietystore
+package com.moshaoxia.viewfinder
 
 import org.junit.Test
 

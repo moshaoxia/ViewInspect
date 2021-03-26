@@ -6,3 +6,31 @@
 - 轻量，作用于运行时，无侵入性，可放心接入
 ## 效果截图
 <img src="https://github.com/moshaoxia/ViewFinder/blob/master/WechatIMG38-tuya.jpeg" width="300px" height="600px">
+
+## 使用方式
+
+```
+  HookViewClickHelper.OnTouchListenerProxy.setInterceptor {
+            val view = FloatingView.get().view
+            if (view != null && view.isVisible) {
+                //这个地方还可以自定义所在页面信息
+                val name = ContextUtil.getRunningActivity().javaClass.simpleName
+                val viewInfo = ContextUtil.getViewInfo(it)
+                FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text ="$viewInfo\n$name"
+            }
+        }
+
+        findViewById<TextView>(R.id.addFloat).setOnClickListener {
+            FloatingView.get().show()
+            //下面这两行代码可以封装到内部去，使用者自己决定
+            HookViewClickHelper.hookCurrentActivity()
+            FloatingView.get().setItemClickListener {
+                HookViewClickHelper.hookCurrentActivity()
+            }
+        }
+```
+
+## Thanks
+https://github.com/leotyndale/EnFloatingView
+
+使用了部分这个库的代码作为悬浮窗显示

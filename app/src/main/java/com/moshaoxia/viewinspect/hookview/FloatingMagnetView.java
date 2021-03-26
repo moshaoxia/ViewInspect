@@ -1,4 +1,4 @@
-package com.moshaoxia.viewfinder.hookview;
+package com.moshaoxia.viewinspect.hookview;
 
 import android.content.Context;
 import android.content.res.Configuration;

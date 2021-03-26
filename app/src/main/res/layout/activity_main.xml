@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:paddingTop="40dp"
-        tools:context=".MainActivity"
+        tools:context="com.moshaoxia.viewinspect.MainActivity"
         android:background="@android:color/holo_green_light">
         <LinearLayout
             android:id="@+id/ll_root"

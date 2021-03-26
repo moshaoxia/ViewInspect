@@ -1,4 +1,4 @@
-package com.moshaoxia.viewfinder.hookview;
+package com.moshaoxia.viewinspect.hookview;
 
 import android.app.Activity;
 import android.app.Application;
@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
-import com.moshaoxia.viewfinder.R;
+import com.moshaoxia.viewinspect.R;
 
 import java.lang.ref.WeakReference;
 

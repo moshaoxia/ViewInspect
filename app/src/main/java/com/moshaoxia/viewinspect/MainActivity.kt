@@ -1,4 +1,4 @@
-package com.moshaoxia.viewfinder
+package com.moshaoxia.viewinspect
 
 import android.os.Bundle
 import android.util.Log
@@ -7,9 +7,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.moshaoxia.viewfinder.hookview.FloatingView
-import com.moshaoxia.viewfinder.hookview.HookViewClickHelper
-import com.moshaoxia.viewfinder.hookview.ContextUtil
+import com.moshaoxia.viewinspect.hookview.FloatingView
+import com.moshaoxia.viewinspect.hookview.HookViewClickHelper
+import com.moshaoxia.viewinspect.hookview.ContextUtil
 
 class MainActivity : AppCompatActivity() {
 

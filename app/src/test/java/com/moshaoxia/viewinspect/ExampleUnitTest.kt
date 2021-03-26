@@ -1,4 +1,4 @@
-package com.moshaoxia.viewfinder
+package com.moshaoxia.viewinspect
 
 import org.junit.Test
 

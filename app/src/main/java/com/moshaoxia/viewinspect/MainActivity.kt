@@ -2,6 +2,7 @@ package com.moshaoxia.viewinspect
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -10,6 +11,7 @@ import androidx.core.view.isVisible
 import com.moshaoxia.viewinspect.hookview.FloatingView
 import com.moshaoxia.viewinspect.hookview.HookViewClickHelper
 import com.moshaoxia.viewinspect.hookview.ContextUtil
+import com.moshaoxia.viewinspect.hookview.IFloatingView
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,22 +42,40 @@ class MainActivity : AppCompatActivity() {
             HookViewClickHelper.hookViewClick(findViewById(R.id.ll_root))
         }
         HookViewClickHelper.OnTouchListenerProxy.setInterceptor {
-            val view = FloatingView.get().view
-            if (view != null && view.isVisible) {
-                //这个地方还可以自定义所在页面信息
-                val name = ContextUtil.getRunningActivity().javaClass.simpleName
-                val viewInfo = ContextUtil.getViewInfo(it)
-                FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text ="$viewInfo\n$name"
-            }
+            FloatingView.get().updateViews(it)
+            val v = it.first
+            showViewInfo(v)
         }
 
         findViewById<TextView>(R.id.addFloat).setOnClickListener {
             FloatingView.get().show()
             //下面这两行代码可以封装到内部去，使用者自己决定
             HookViewClickHelper.hookCurrentActivity()
-            FloatingView.get().setItemClickListener {
-                HookViewClickHelper.hookCurrentActivity()
-            }
+            FloatingView.get().setFloatingCallback(object : IFloatingView.FloatingCallback {
+                override fun onTriggerHook() {
+                    HookViewClickHelper.hookCurrentActivity()
+
+                }
+
+                override fun onShowChild(v: View) {
+                    showViewInfo(v)
+                }
+
+                override fun onShowParent(v: View) {
+                    showViewInfo(v)
+                }
+            })
+
+        }
+    }
+
+    private fun showViewInfo(v: View) {
+        val view = FloatingView.get().view
+        if (view != null && view.isVisible) {
+            //这个地方还可以自定义所在页面信息
+            val name = ContextUtil.getRunningActivity().javaClass.simpleName
+            val viewInfo = ContextUtil.getViewInfo(v)
+            FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text = "$viewInfo\n$name"
         }
     }
 

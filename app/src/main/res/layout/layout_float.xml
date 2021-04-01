@@ -4,7 +4,15 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_float_bg">
-
+    <ImageView
+        android:id="@+id/btnParent"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:padding="4dp"
+        android:src="@drawable/arrow_down"
+        android:layout_gravity="center_horizontal"
+        android:rotation="180"
+        />
     <TextView
         android:id="@+id/viewInfo"
         android:layout_width="wrap_content"
@@ -32,5 +40,13 @@
         android:paddingStart="5dp"
         android:paddingTop="0dp"
         android:src="@drawable/ic_close" />
+    <ImageView
+        android:id="@+id/btnChild"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:padding="4dp"
+        android:src="@drawable/arrow_down"
+        android:layout_gravity="center_horizontal|bottom"
+        />
 </com.moshaoxia.viewinspect.hookview.FloatingMagnetView>
 

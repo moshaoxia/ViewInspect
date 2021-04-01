@@ -91,7 +91,7 @@ public class HookViewClickHelper {
                     list.add(v);
                 } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                     if (!list.isEmpty()) {
-                        interceptor.onTouch(list.getFirst());
+                        interceptor.onTouch(list);
                         list.clear();
                     }
                 }
@@ -103,7 +103,7 @@ public class HookViewClickHelper {
         }
 
         public interface Interceptor {
-            void onTouch(View v);
+            void onTouch(LinkedList<View> v);
         }
     }
 }

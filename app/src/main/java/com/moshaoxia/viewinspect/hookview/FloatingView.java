@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import com.moshaoxia.viewinspect.R;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 
 
 /**
@@ -36,10 +37,23 @@ public class FloatingView implements IFloatingView {
     private static volatile FloatingView mInstance;
     private WeakReference<FrameLayout> mContainer;
     private Activity attachedActivity;
-    private View.OnClickListener clickListener;
+    private FloatingCallback floatingCallback;
     private int marginLeftRight = 15;
     private int marginBottom = 300;
     private ViewGroup.LayoutParams mLayoutParams = getParams();
+    private LinkedList<View> mViews = new LinkedList<>();
+    private View curView;
+
+    public void setFloatingCallback(FloatingCallback floatingCallback) {
+        this.floatingCallback = floatingCallback;
+    }
+
+    @Override
+    public void updateViews(LinkedList<View> views) {
+        curView = views.getFirst();
+        mViews.clear();
+        mViews.addAll(views);
+    }
 
     private FloatingView() {
         registerActivity();
@@ -72,11 +86,6 @@ public class FloatingView implements IFloatingView {
             }
         });
         return this;
-    }
-
-    @Override
-    public void setItemClickListener(View.OnClickListener listener) {
-        clickListener = listener;
     }
 
     private void ensureFloatingView() {
@@ -148,18 +157,41 @@ public class FloatingView implements IFloatingView {
                 attachedActivity = ContextUtil.getRunningActivity();
             }
             mEnFloatingView = (FloatingMagnetView) LayoutInflater.from(attachedActivity).inflate(R.layout.layout_float, null);
-            mEnFloatingView.findViewById(R.id.btnClose).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    remove();
+            mEnFloatingView.findViewById(R.id.btnClose).setOnClickListener(v -> remove());
+            mEnFloatingView.findViewById(R.id.btnParent).setOnClickListener(v -> {
+                if (floatingCallback == null) {
+                    return;
+                }
+                if (mViews != null && !mViews.isEmpty() && mViews.contains(curView)) {
+                    int index = mViews.indexOf(curView);
+                    index++;
+                    if (index >= mViews.size()) {
+                        index = mViews.size() - 1;
+                    }
+                    floatingCallback.onShowParent(mViews.get(index));
                 }
             });
-            mEnFloatingView.findViewById(R.id.hookTrigger).setOnClickListener(new View.OnClickListener() {
+
+            mEnFloatingView.findViewById(R.id.btnChild).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (clickListener != null) {
-                        clickListener.onClick(v);
+                    if (floatingCallback == null) {
+                        return;
                     }
+                    if (mViews != null && !mViews.isEmpty() && mViews.contains(curView)) {
+                        int index = mViews.indexOf(curView);
+                        index--;
+                        if (index < 0) {
+                            index = 0;
+                        }
+                        floatingCallback.onShowChild(mViews.get(index));
+                    }
+                }
+            });
+
+            mEnFloatingView.findViewById(R.id.hookTrigger).setOnClickListener(v -> {
+                if (floatingCallback != null) {
+                    floatingCallback.onTriggerHook();
                 }
             });
         }

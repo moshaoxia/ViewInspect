@@ -49,8 +49,9 @@ public class HookViewClickHelper {
     }
 
     public static void hookCurrentActivity() {
-        View decorView = ContextUtil.getRunningActivity().getWindow().getDecorView();
+        View decorView = Utils.getRunningActivity().getWindow().getDecorView();
         hookViews(decorView);
+        Utils.clearViewBorder(decorView);
     }
 
     public static void hookViews(View view) {
@@ -91,7 +92,9 @@ public class HookViewClickHelper {
                     list.add(v);
                 } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                     if (!list.isEmpty()) {
-                        interceptor.onTouch(list);
+                        //链表的尾部就是
+                        Utils.clearViewBorder(list.peekLast());
+                        interceptor.onTouch(new LinkedList(list));
                         list.clear();
                     }
                 }

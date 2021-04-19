@@ -173,7 +173,7 @@ public class FloatingView implements IFloatingView {
     public FloatingView show() {
         if (mEnFloatingView == null) {
             if (attachedActivity == null) {
-                attachedActivity = ContextUtil.getRunningActivity();
+                attachedActivity = Utils.getRunningActivity();
             }
             mEnFloatingView = (FloatingMagnetView) LayoutInflater.from(attachedActivity).inflate(R.layout.layout_float, null);
             mEnFloatingView.findViewById(R.id.btnClose).setOnClickListener(v -> remove());
@@ -182,6 +182,7 @@ public class FloatingView implements IFloatingView {
                     return;
                 }
                 if (mViews != null && !mViews.isEmpty() && mViews.contains(curView)) {
+                    Utils.clearViewBorder(curView);
                     int index = mViews.indexOf(curView);
                     index++;
                     if (index >= mViews.size()) {
@@ -198,6 +199,7 @@ public class FloatingView implements IFloatingView {
                         return;
                     }
                     if (mViews != null && !mViews.isEmpty() && mViews.contains(curView)) {
+                        Utils.clearViewBorder(curView);
                         int index = mViews.indexOf(curView);
                         index--;
                         if (index < 0) {
@@ -277,7 +279,7 @@ public class FloatingView implements IFloatingView {
     }
 
     private void registerActivity() {
-        ContextUtil.getApp()
+        Utils.getApp()
                 .registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
                     @Override
                     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {

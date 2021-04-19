@@ -70,7 +70,7 @@ public class HookViewClickHelper {
     }
 
     public static class OnTouchListenerProxy implements View.OnTouchListener {
-
+        public static boolean intercept = false;
         private View.OnTouchListener touchListener;
         private static Interceptor interceptor;
         private static LinkedList<View> list = new LinkedList<>();
@@ -94,6 +94,9 @@ public class HookViewClickHelper {
                         interceptor.onTouch(list);
                         list.clear();
                     }
+                }
+                if (intercept) {
+                    return true;
                 }
             }
             if (touchListener != null) {

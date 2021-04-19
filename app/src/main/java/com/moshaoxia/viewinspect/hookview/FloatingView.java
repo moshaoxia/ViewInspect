@@ -11,13 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import com.moshaoxia.viewinspect.R;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
@@ -53,6 +57,21 @@ public class FloatingView implements IFloatingView {
         curView = views.getFirst();
         mViews.clear();
         mViews.addAll(views);
+    }
+
+    @Override
+    public void updateViewInfo(@NotNull String info) {
+        if (getView() != null) {
+            ((TextView) getView().findViewById(R.id.viewInfo)).setText(info);
+        }
+    }
+
+    @Override
+    public void updateLockStatus(boolean locked) {
+        if (getView() != null) {
+            ((ImageView) getView().findViewById(R.id.iconLock))
+                    .setImageResource(locked ? R.drawable.ic_lock : R.drawable.ic_unlock);
+        }
     }
 
     private FloatingView() {
@@ -192,6 +211,12 @@ public class FloatingView implements IFloatingView {
             mEnFloatingView.findViewById(R.id.hookTrigger).setOnClickListener(v -> {
                 if (floatingCallback != null) {
                     floatingCallback.onTriggerHook();
+                }
+            });
+
+            mEnFloatingView.findViewById(R.id.iconLock).setOnClickListener(v -> {
+                if (floatingCallback != null) {
+                    floatingCallback.onLockSwitch();
                 }
             });
         }

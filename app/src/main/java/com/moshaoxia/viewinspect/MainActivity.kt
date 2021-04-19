@@ -12,6 +12,7 @@ import com.moshaoxia.viewinspect.hookview.FloatingView
 import com.moshaoxia.viewinspect.hookview.HookViewClickHelper
 import com.moshaoxia.viewinspect.hookview.ContextUtil
 import com.moshaoxia.viewinspect.hookview.IFloatingView
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,9 +29,9 @@ class MainActivity : AppCompatActivity() {
             HookViewClickHelper.hookViewClick(btnHook)
         }
         findViewById<TextView>(R.id.btnText).setOnClickListener {
-            hello.setOnClickListener {
-                Toast.makeText(this, "Text", Toast.LENGTH_SHORT).show()
-            }
+
+            Toast.makeText(this, "Hello!", Toast.LENGTH_SHORT).show()
+
         }
 
         findViewById<LinearLayout>(R.id.ll_root).setOnTouchListener { v, event ->
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             FloatingView.get().show()
             //下面这两行代码可以封装到内部去，使用者自己决定
             HookViewClickHelper.hookCurrentActivity()
+            FloatingView.get().updateLockStatus(HookViewClickHelper.OnTouchListenerProxy.intercept)
             FloatingView.get().setFloatingCallback(object : IFloatingView.FloatingCallback {
                 override fun onTriggerHook() {
                     HookViewClickHelper.hookCurrentActivity()
@@ -64,6 +66,11 @@ class MainActivity : AppCompatActivity() {
                 override fun onShowParent(v: View) {
                     showViewInfo(v)
                 }
+
+                override fun onLockSwitch() {
+                    HookViewClickHelper.OnTouchListenerProxy.intercept = !HookViewClickHelper.OnTouchListenerProxy.intercept
+                    FloatingView.get().updateLockStatus(HookViewClickHelper.OnTouchListenerProxy.intercept)
+                }
             })
 
         }
@@ -75,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             //这个地方还可以自定义所在页面信息
             val name = ContextUtil.getRunningActivity().javaClass.simpleName
             val viewInfo = ContextUtil.getViewInfo(v)
-            FloatingView.get().view.findViewById<TextView>(R.id.viewInfo).text = "$viewInfo\n$name"
+            FloatingView.get().updateViewInfo("$viewInfo\n$name")
         }
     }
 

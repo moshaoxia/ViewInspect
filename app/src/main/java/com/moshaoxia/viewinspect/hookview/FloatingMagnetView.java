@@ -20,7 +20,7 @@ import android.widget.FrameLayout;
  */
 public class FloatingMagnetView extends FrameLayout implements NotHook {
 
-    public static final int MARGIN_EDGE = 13;
+    public static final int MARGIN_EDGE = -600;
     private float mOriginalRawX;
     private float mOriginalRawY;
     private float mOriginalX;
@@ -118,13 +118,13 @@ public class FloatingMagnetView extends FrameLayout implements NotHook {
     }
 
     public void moveToEdge(boolean isLeft, boolean isLandscape) {
-        float moveDistance = isLeft ? MARGIN_EDGE : mScreenWidth - MARGIN_EDGE;
+        float destinationX = isLeft ? Math.max(getX(), MARGIN_EDGE) : Math.min(getX(), mScreenWidth - MARGIN_EDGE);
         float y = getY();
         if (!isLandscape && mPortraitY != 0) {
             y = mPortraitY;
             clearPortraitY();
         }
-        mMoveAnimator.start(moveDistance, Math.min(Math.max(0, y), mScreenHeight - getHeight()));
+        mMoveAnimator.start(destinationX, Math.min(Math.max(0, y), mScreenHeight - getHeight()));
     }
 
     private void clearPortraitY() {

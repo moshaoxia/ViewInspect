@@ -3,7 +3,9 @@
     android:id="@+id/floatRoot"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_float_bg">
+    android:background="@drawable/shape_float_bg"
+    android:paddingStart="15dp"
+    >
     <ImageView
         android:id="@+id/btnParent"
         android:layout_width="20dp"
@@ -22,14 +24,28 @@
         android:padding="15dp"
         android:paddingStart="30dp"
         android:textColor="@color/white" />
-
-    <ImageView
-        android:id="@+id/hookTrigger"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_hook"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_gravity="center_vertical"
-        />
+        >
+        <ImageView
+            android:id="@+id/iconLock"
+            android:padding="3dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_lock"
+            android:layout_marginStart="3dp"
+            />
+        <ImageView
+            android:id="@+id/hookTrigger"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_hook"
+            />
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/btnClose"

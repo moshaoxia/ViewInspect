@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedList;
 
 /**
@@ -32,12 +34,22 @@ public interface IFloatingView {
 
     void updateViews(LinkedList<View> views);
 
+    void updateViewInfo(@NotNull String info);
+
+    /**
+     * locked标记View树都被拦截，更新🔐的图标
+     * @param locked
+     */
+    void updateLockStatus(boolean locked);
+
     interface FloatingCallback {
         void onTriggerHook();
 
         void onShowChild(View v);
 
         void onShowParent(View v);
+
+        void onLockSwitch();
     }
 
 

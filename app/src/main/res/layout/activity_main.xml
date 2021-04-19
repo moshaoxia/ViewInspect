@@ -32,7 +32,7 @@
             <TextView
                 android:id="@+id/btnText"
                 style="@style/btnStyle"
-                android:text="给TextView设置点击事件"
+                android:text="可以点击的TextView"
                 />
         </LinearLayout>
 

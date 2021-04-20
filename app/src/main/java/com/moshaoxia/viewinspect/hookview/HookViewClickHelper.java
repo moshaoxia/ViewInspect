@@ -70,11 +70,35 @@ public class HookViewClickHelper {
         }
     }
 
+    /**
+     * 构造一个目标view到根View的列表，头是targetView,尾是DecorView
+     * @param targetView
+     */
+    public static LinkedList<View>  buildTarget2RootChain(View targetView) {
+        LinkedList<View> list = new LinkedList<>();
+        View v = targetView;
+        Class<?> decorClass = null;
+        try {
+            decorClass = Class.forName("com.android.internal.policy.DecorView");
+        } catch (ClassNotFoundException e) {
+
+        }
+        while (v != null) {
+            list.add(v);
+            if (v.getClass() == decorClass) {
+                //已经到了DecorView，中断
+                break;
+            }
+            v = (View) v.getParent();
+        }
+        return list;
+    }
+
     public static class OnTouchListenerProxy implements View.OnTouchListener {
         public static boolean intercept = false;
         private View.OnTouchListener touchListener;
         private static Interceptor interceptor;
-        private static LinkedList<View> list = new LinkedList<>();
+        private static View targetView = null;
 
         public static void setInterceptor(Interceptor interceptor) {
             OnTouchListenerProxy.interceptor = interceptor;
@@ -88,15 +112,16 @@ public class HookViewClickHelper {
         public boolean onTouch(View v, MotionEvent event) {
             if (interceptor != null) {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-                    //todo 添加一个过滤透明View的方法
-                    list.add(v);
-                } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-                    if (!list.isEmpty()) {
-                        //链表的尾部就是
-                        Utils.clearViewBorder(list.peekLast());
-                        interceptor.onTouch(new LinkedList(list));
-                        list.clear();
+                    if (targetView == null) {
+                        targetView = v;
                     }
+                } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+                    if (targetView != null) {
+                        LinkedList<View> views = buildTarget2RootChain(targetView);
+                        Utils.clearViewBorder(views.peekLast());
+                        interceptor.onTouch(views);
+                    }
+                    targetView = null;
                 }
                 if (intercept) {
                     return true;

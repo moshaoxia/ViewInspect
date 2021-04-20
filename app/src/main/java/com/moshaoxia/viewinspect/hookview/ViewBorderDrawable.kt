@@ -25,8 +25,8 @@ class ViewBorderDrawable(view: View) : Drawable() {
 
     init {
         paint.style = Paint.Style.STROKE
-        paint.color = Color.GREEN
-        paint.strokeWidth = 4f
-        paint.pathEffect = DashPathEffect(floatArrayOf(4f, 4f), 0f)
+        paint.color = Color.RED
+        paint.strokeWidth = 10f
+        paint.pathEffect = DashPathEffect(floatArrayOf(8f, 4f), 0f)
     }
 }

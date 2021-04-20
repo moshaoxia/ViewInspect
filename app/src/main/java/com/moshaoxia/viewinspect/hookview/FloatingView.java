@@ -188,7 +188,8 @@ public class FloatingView implements IFloatingView {
                     if (index >= mViews.size()) {
                         index = mViews.size() - 1;
                     }
-                    floatingCallback.onShowParent(mViews.get(index));
+                    curView = mViews.get(index);
+                    floatingCallback.onShowParent(curView);
                 }
             });
 
@@ -205,7 +206,8 @@ public class FloatingView implements IFloatingView {
                         if (index < 0) {
                             index = 0;
                         }
-                        floatingCallback.onShowChild(mViews.get(index));
+                        curView = mViews.get(index);
+                        floatingCallback.onShowChild(curView);
                     }
                 }
             });

@@ -49,9 +49,9 @@ public class HookViewClickHelper {
     }
 
     public static void hookCurrentActivity() {
-        View decorView = Utils.getRunningActivity().getWindow().getDecorView();
+        View decorView = ViewInspectUtil.getRunningActivity().getWindow().getDecorView();
         hookViews(decorView);
-        Utils.clearViewBorder(decorView);
+        ViewInspectUtil.clearViewBorder(decorView);
     }
 
     public static void hookViews(View view) {
@@ -68,30 +68,6 @@ public class HookViewClickHelper {
         } else {
             hookViewClick(view);
         }
-    }
-
-    /**
-     * 构造一个目标view到根View的列表，头是targetView,尾是DecorView
-     * @param targetView
-     */
-    public static LinkedList<View>  buildTarget2RootChain(View targetView) {
-        LinkedList<View> list = new LinkedList<>();
-        View v = targetView;
-        Class<?> decorClass = null;
-        try {
-            decorClass = Class.forName("com.android.internal.policy.DecorView");
-        } catch (ClassNotFoundException e) {
-
-        }
-        while (v != null) {
-            list.add(v);
-            if (v.getClass() == decorClass) {
-                //已经到了DecorView，中断
-                break;
-            }
-            v = (View) v.getParent();
-        }
-        return list;
     }
 
     public static class OnTouchListenerProxy implements View.OnTouchListener {
@@ -117,14 +93,14 @@ public class HookViewClickHelper {
                     }
                 } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
                     if (targetView != null) {
-                        LinkedList<View> views = buildTarget2RootChain(targetView);
-                        Utils.clearViewBorder(views.peekLast());
+                        LinkedList<View> views = ViewInspectUtil.buildTarget2RootChain(targetView);
+                        ViewInspectUtil.clearViewBorder(views.peekLast());
                         interceptor.onTouch(views);
                     }
                     targetView = null;
-                }
-                if (intercept) {
-                    return true;
+                    if (intercept) {
+                        return true;
+                    }
                 }
             }
             if (touchListener != null) {

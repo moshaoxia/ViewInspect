@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ import java.util.List;
  * Email:345079386@qq.com
  * Description:
  */
-public class Utils {
+public class ViewInspectUtil {
     private static final String TAG = "Utils";
     private static Application instance;
 
@@ -160,5 +161,30 @@ public class Utils {
         LayerDrawable newDrawable = new LayerDrawable(drawables.toArray(new Drawable[drawables.size()]));
         view.setBackground(newDrawable);
     }
+
+    /**
+     * 构造一个目标view到根View的列表，头是targetView,尾是DecorView
+     * @param targetView
+     */
+    public static LinkedList<View> buildTarget2RootChain(View targetView) {
+        LinkedList<View> list = new LinkedList<>();
+        View v = targetView;
+        Class<?> decorClass = null;
+        try {
+            decorClass = Class.forName("com.android.internal.policy.DecorView");
+        } catch (ClassNotFoundException e) {
+
+        }
+        while (v != null) {
+            list.add(v);
+            if (v.getClass() == decorClass) {
+                //已经到了DecorView，中断
+                break;
+            }
+            v = (View) v.getParent();
+        }
+        return list;
+    }
+
 
 }

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.moshaoxia.viewinspect.hookview.FloatingView
 import com.moshaoxia.viewinspect.hookview.HookViewClickHelper
-import com.moshaoxia.viewinspect.hookview.Utils
+import com.moshaoxia.viewinspect.hookview.ViewInspectUtil
 import com.moshaoxia.viewinspect.hookview.IFloatingView
 
 class MainActivity : AppCompatActivity() {
@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
         val view = FloatingView.get().view
         if (view != null && view.isVisible) {
             //这个地方还可以自定义所在页面信息
-            val name = Utils.getRunningActivity().javaClass.simpleName
-            val viewInfo = Utils.getViewInfo(v)
+            val name = ViewInspectUtil.getRunningActivity().javaClass.simpleName
+            val viewInfo = ViewInspectUtil.getViewInfo(v)
             FloatingView.get().updateViewInfo("$viewInfo\n$name")
         }
     }
